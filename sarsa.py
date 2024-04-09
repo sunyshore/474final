@@ -48,7 +48,7 @@ numStates = 2**8
 numActions = 4  # 4 directions that the snake can move
 Q = np.zeros((numStates, numActions))
 
-lr = 0.9 #learning rate
+lr = 0.9 # learning rate 
 gamma = 0.8  # discount rate
 epsilon = 0.2  # exploration rate in training games
 numEpisodes = 10001  # number of games to train for
@@ -57,21 +57,24 @@ Qs = np.zeros([numEpisodes, numStates, numActions])
 bestLength = 0
 print("Training for", numEpisodes, "games...")
 for episode in range(numEpisodes):
-    #    print("New Game")
+
     game = SnakeGame(boardDim, boardDim)
     state = game.calcStateNum()
+    action = random.randint(0, 3)
     gameOver = False
     score = 0
     while not gameOver:
         if random.uniform(0, 1) < epsilon:
-            action = random.randint(0, 3)
+            new_action = random.randint(0, 3)
         else:
             possibleQs = Q[state, :]
-            action = np.argmax(possibleQs)
+            new_action = np.argmax(possibleQs)
         new_state, reward, gameOver, score = game.makeMove(action)
 
-        Q[state, action] = Q[state, action] + lr * (reward + gamma * np.max(Q[new_state, :]) - Q[state, action])
+        Q[state, action] = Q[state, action]  + lr * (reward + gamma * Q[new_state][new_action] - Q[state, action]) 
         state = new_state
+        action = new_action
+
     Qs[episode, :, :] = np.copy(Q)
     if episode % 100 == 0:
         averageLength, lengths = evaluateScore(Q, boardDim, 25)
