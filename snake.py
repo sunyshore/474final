@@ -2,6 +2,7 @@
 Basic snake game for use by reinforcement learning.
 Run this script to test it out in the console
 '''
+'test because this wont change otherwise'
 import numpy as np
 import random
 
